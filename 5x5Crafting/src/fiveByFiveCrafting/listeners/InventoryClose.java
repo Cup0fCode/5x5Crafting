@@ -13,7 +13,7 @@ import fiveByFiveCrafting.recipes.RecipeItem;
 
 public class InventoryClose implements Listener {
 	@EventHandler
-	public void onInventoryClick(InventoryCloseEvent e) {
+	public void onInventoryClose(InventoryCloseEvent e) {
 		// TODO: Give players items in chest
 		Player p = (Player) e.getPlayer();
 		Inventory inv = e.getInventory();

@@ -24,10 +24,6 @@ public class InventoryClick implements Listener {
 	public void onInventoryClick(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
 
-		// if player in bottom inventory return
-		if (e.getRawSlot() >= e.getView().getTopInventory().getSize())
-			return;
-
 		if (p.getOpenInventory().getTitle().contains("Crafting")
 				&& p.getOpenInventory().getType().equals(InventoryType.CHEST)) {
 			if ((e.getRawSlot() % 9 == 0 || e.getRawSlot() % 9 == 1 || e.getRawSlot() % 9 == 2

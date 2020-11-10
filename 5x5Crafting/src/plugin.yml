@@ -1,0 +1,9 @@
+main: fiveByFiveCrafting.Crafting5x5
+name: 5x5Crafting
+version: '0.1'
+description: Five by five crafting in minecraft.
+author: Nicholas Kopiwoda
+api-version: 1.14
+commands:
+  craft:
+    description: craft

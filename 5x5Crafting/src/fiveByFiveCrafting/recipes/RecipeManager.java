@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
@@ -23,9 +24,10 @@ public class RecipeManager {
 	private ArrayList<Recipe> recipes;
 
 	public void storeRecipes() {
-
 		File folder = new File(plugin.getDataFolder() + "/recipes");
-		File[] listOfFiles = folder.listFiles();
+		File folder2 = new File(plugin.getDataFolder() + "/recipes/customRecipes/");
+		
+		File[] listOfFiles = (File[]) ArrayUtils.addAll((File[]) folder.listFiles(),(File[]) folder2.listFiles());
 
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		recipes = new ArrayList<Recipe>();
@@ -85,7 +87,7 @@ public class RecipeManager {
 				RecipeItem[] ingredients = recipe.getIngredients();
 				RecipeItem[][] itemMatrix = deepClone(pattern);
 				
-				Bukkit.getLogger().info(getAmount(itemMatrix) + ":" + ingredients.length);
+				//Bukkit.getLogger().info(getAmount(itemMatrix) + ":" + ingredients.length);
 				if (getAmount(itemMatrix) != ingredients.length) 
 					continue;
 				
@@ -101,7 +103,7 @@ public class RecipeManager {
 							if (ingredient.check(items[i])) {
 								hasItem = true;
 								items[i] = null;
-								Bukkit.getLogger().info(ingredient.getMaterial().name());
+								//Bukkit.getLogger().info(ingredient.getMaterial().name());
 								continue ingredientsLoop;
 							}
 						}

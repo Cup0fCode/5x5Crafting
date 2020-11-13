@@ -36,7 +36,9 @@ public class RecipeItem {
 
 	public boolean check(RecipeItem recipeItem) {
 		boolean check = true;
-
+		if (recipeItem == null) {
+			return false;
+		}
 		if (!recipeItem.getMaterial().equals(getMaterial()))
 			check = false;
 

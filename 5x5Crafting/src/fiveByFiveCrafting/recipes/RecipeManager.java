@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -26,8 +28,16 @@ public class RecipeManager {
 	public void storeRecipes() {
 		File folder = new File(plugin.getDataFolder() + "/recipes");
 		File folder2 = new File(plugin.getDataFolder() + "/recipes/customRecipes/");
-		
-		File[] listOfFiles = (File[]) ArrayUtils.addAll((File[]) folder.listFiles(),(File[]) folder2.listFiles());
+
+		// create folders if they do not exist
+		if (!folder.exists()) {
+			folder.mkdirs();
+		}
+		if (!folder2.exists()) {
+			folder2.mkdirs();
+		}
+
+		File[] listOfFiles = (File[]) ArrayUtils.addAll((File[]) folder.listFiles(), (File[]) folder2.listFiles());
 
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		recipes = new ArrayList<Recipe>();
@@ -43,6 +53,14 @@ public class RecipeManager {
 				} catch (IOException err) {
 					plugin.getLogger().info(err.getMessage());
 				}
+			}
+		}
+		// Add Minecraft Recipes
+		Iterator<org.bukkit.inventory.Recipe> recipeIterator = Bukkit.recipeIterator();
+		while (recipeIterator.hasNext()) {
+			org.bukkit.inventory.Recipe recipe = recipeIterator.next();
+			if (recipe instanceof org.bukkit.inventory.ShapelessRecipe || recipe instanceof org.bukkit.inventory.ShapedRecipe) {
+				recipes.add(new Recipe(recipe));
 			}
 		}
 	}
@@ -83,27 +101,25 @@ public class RecipeManager {
 					return recipe;
 				}
 			} else if (recipe.getType().contains("crafting_shapeless")) {
-				//check if amount of items required is same as amount of items in table
+				// check if amount of items required is same as amount of items in table
 				RecipeItem[] ingredients = recipe.getIngredients();
 				RecipeItem[][] itemMatrix = deepClone(pattern);
-				
-				//Bukkit.getLogger().info(getAmount(itemMatrix) + ":" + ingredients.length);
-				if (getAmount(itemMatrix) != ingredients.length) 
+
+				// Bukkit.getLogger().info(getAmount(itemMatrix) + ":" + ingredients.length);
+				if (getAmount(itemMatrix) != ingredients.length)
 					continue;
-				
-				
-			
+
 				ingredientsLoop: for (RecipeItem ingredient : ingredients) {
 					boolean hasItem = false;
 					for (RecipeItem[] items : itemMatrix) {
-						for (int i = 0; i < items.length ; i++) {
+						for (int i = 0; i < items.length; i++) {
 							if (items[i] == null) {
 								continue;
 							}
 							if (ingredient.check(items[i])) {
 								hasItem = true;
 								items[i] = null;
-								//Bukkit.getLogger().info(ingredient.getMaterial().name());
+								// Bukkit.getLogger().info(ingredient.getMaterial().name());
 								continue ingredientsLoop;
 							}
 						}
@@ -119,7 +135,7 @@ public class RecipeManager {
 
 		return null;
 	}
-	
+
 	public static int getAmount(RecipeItem[][] matrix) {
 		int amount = 0;
 		for (RecipeItem[] array : matrix) {

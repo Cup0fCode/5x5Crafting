@@ -25,8 +25,6 @@ public class Crafting5x5 extends JavaPlugin {
         
         getLogger().info("Loaded 5x5Crafting");
         getCommand("craft").setExecutor(new CraftingCommands());
-        //getCommand("new recipe").setExecutor(new CraftingCommands());
-
 
         registerListeners(new InventoryClose(), new InventoryClick());
     }

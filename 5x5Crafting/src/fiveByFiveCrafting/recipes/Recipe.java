@@ -1,10 +1,14 @@
 package fiveByFiveCrafting.recipes;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 
 import com.google.gson.annotations.Expose;
 
@@ -84,9 +88,46 @@ public class Recipe {
 		}
 	}
 
+	public Recipe(org.bukkit.inventory.Recipe recipe) {
+		// set result
+		result = new RecipeItem(recipe.getResult());
+
+		if (recipe instanceof org.bukkit.inventory.ShapedRecipe) {
+			// set type
+			type = "minecraft:crafting_shaped";
+
+			// set key and pattern
+			pattern = ((org.bukkit.inventory.ShapedRecipe) recipe).getShape();
+			key = new HashMap<String, RecipeItem>();
+			
+			((org.bukkit.inventory.ShapedRecipe) recipe).getIngredientMap();
+			for (Entry<Character, ItemStack> entry : ((org.bukkit.inventory.ShapedRecipe) recipe).getIngredientMap() .entrySet()) {
+				key.put(String.valueOf(entry.getKey()), new RecipeItem(entry.getValue()));
+			}
+			
+			Map<Character, RecipeChoice> choiceMap = ((org.bukkit.inventory.ShapedRecipe) recipe).getChoiceMap();
+			for (Entry<Character, RecipeChoice> entry : choiceMap.entrySet()) {
+				key.put(String.valueOf(entry.getKey()), new RecipeItem(entry.getValue()));
+			}
+			key.put(" ", new RecipeItem(new ItemStack(Material.AIR)));
+
+		}
+		if (recipe instanceof org.bukkit.inventory.ShapelessRecipe) {
+			// set type
+			type = "minecraft:crafting_shapeless";
+
+			// set ingredients
+			List<ItemStack> ingredientList = ((org.bukkit.inventory.ShapelessRecipe) recipe).getIngredientList();
+			ingredients = new RecipeItem[ingredientList.size()];
+			for (int i = 0; i < ingredientList.size(); i++) {
+				ingredients[i] = new RecipeItem(ingredientList.get(i));
+			}
+		}
+	}
+
 	public RecipeItem[][] getPattern() {
 		// Return RecipeItem[][] of pattern
-		RecipeItem[][] pattern = new RecipeItem[this.pattern.length][this.pattern[1].length()];
+		RecipeItem[][] pattern = new RecipeItem[this.pattern.length][this.pattern[0].length()];
 		int y = 0;
 		for (String line : this.pattern) {
 			for (int x = 0; x < line.length(); x++) {

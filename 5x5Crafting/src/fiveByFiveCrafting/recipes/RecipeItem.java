@@ -1,12 +1,14 @@
 package fiveByFiveCrafting.recipes;
 
-import java.util.Map;
-
-import org.bukkit.Bukkit;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.org.apache.commons.io.output.ByteArrayOutputStream;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import com.google.gson.annotations.Expose;
 
@@ -17,20 +19,18 @@ public class RecipeItem {
 	@Expose
 	private int count;
 	@Expose
-	private RecipeItemMeta recipeItemMeta;
-	@Expose 
-	private RecipeChoice recipeChoice; //used for crafting recipes with choices for blocks, RecipeItem will have no item
+	private RecipeChoice recipeChoice; // used for crafting recipes with choices for blocks, RecipeItem will have no
+										// item
+	@Expose
+	private String base64ItemStack;
 
 	public RecipeItem(ItemStack item) {
 		if (item == null) {
 			this.item = "AIR";
 		} else {
 			this.item = item.getType().name();
-		
-		if (item.hasItemMeta())
-			recipeItemMeta = new RecipeItemMeta(item.getItemMeta());
-			
-		count = item.getAmount();
+			base64ItemStack = itemTo64(item);
+
 		}
 	}
 
@@ -51,45 +51,43 @@ public class RecipeItem {
 	}
 
 	public boolean check(RecipeItem recipeItem) {
-		if (recipeChoice != null) { //this is a recipeChoice item
-			Bukkit.getLogger().info("recipeChoice");
+		if (recipeChoice != null) { // this is a recipeChoice item
 			if (recipeChoice.test(recipeItem.getItemStack()))
 				return true;
 			return false;
 		}
-		
+
 		if (recipeItem == null) {
 			return false;
 		}
+
+		ItemStack item = getItemStack();
+		ItemStack otherItem = recipeItem.getItemStack();
+
+		if (item.hasItemMeta()) {
+			if (!otherItem.hasItemMeta())
+				return false;
+			if (!otherItem.getItemMeta().equals(item.getItemMeta())) {
+				return false;
+			}
+		}
+
 		if (!recipeItem.getMaterial().equals(getMaterial()))
 			return false;
-		if (recipeItemMeta != null) {
-			if (!recipeItem.hasRecipeItemMeta()) {
-				return false;
-			}
-			if (!recipeItemMeta.check(recipeItem.getRecipeItemMeta())) {
-				return false;
-			}
-		}
-		return true;
-	}
 
-	private RecipeItemMeta getRecipeItemMeta() {
-		return recipeItemMeta;
-	}
-
-	private boolean hasRecipeItemMeta() {
-		if (recipeItemMeta == null) {
-			return false;
-		}
 		return true;
 	}
 
 	public ItemStack getItemStack() {
-		ItemStack itemStack = new ItemStack(getMaterial(), count);
-		if (recipeItemMeta != null)
-			itemStack.setItemMeta(recipeItemMeta.getItemMeta(getMaterial()));
-		return itemStack;
+		if (base64ItemStack != null) {
+			try {
+				return itemFrom64(base64ItemStack);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return new ItemStack(getMaterial(), count);
 	}
 
 	public int getCount() {
@@ -97,4 +95,36 @@ public class RecipeItem {
 			return 1;
 		return count;
 	}
+	
+	//Taken from: https://www.spigotmc.org/threads/deserializing-itemmeta-from-json.69760/
+	private static String itemTo64(ItemStack stack) throws IllegalStateException {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+            dataOutput.writeObject(stack);
+
+            // Serialize that array
+            dataOutput.close();
+            return Base64Coder.encodeLines(outputStream.toByteArray());
+        }
+        catch (Exception e) {
+            throw new IllegalStateException("Unable to save item stack.", e);
+        }
+    }
+   
+	//Taken from: https://www.spigotmc.org/threads/deserializing-itemmeta-from-json.69760/
+    private static ItemStack itemFrom64(String data) throws IOException {
+        try {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
+            BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
+            try {
+                return (ItemStack) dataInput.readObject();
+            } finally {
+                dataInput.close();
+            }
+        }
+        catch (ClassNotFoundException e) {
+            throw new IOException("Unable to decode class type.", e);
+        }
+    }
 }

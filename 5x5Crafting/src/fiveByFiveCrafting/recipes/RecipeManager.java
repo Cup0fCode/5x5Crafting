@@ -48,7 +48,7 @@ public class RecipeManager {
 					plugin.getLogger().info("Loading " + file.getAbsolutePath());
 					String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
 
-					plugin.getLogger().info("Loaded recipe " + gson.fromJson(content, Recipe.class));
+					//plugin.getLogger().info("Loaded recipe " + gson.fromJson(content, Recipe.class));
 					recipes.add(gson.fromJson(content, Recipe.class));
 				} catch (IOException err) {
 					plugin.getLogger().info(err.getMessage());

@@ -37,11 +37,15 @@ public class RecipeCreationGUI implements InventoryHolder {
 
 		// Set output tile
 		ItemStack outputTile = new ItemStack(Material.AIR, 1);
-//		ItemMeta outputTileMeta = outputTile.getItemMeta();
-//		outputTileMeta.setDisplayName(" ");
-//		outputTile.setItemMeta(outputTileMeta);
 		inv.setItem(26, outputTile);
+		
+		// Set ShapedRecipeToggle tile
+		ItemStack shapedRecipeToggle = new ItemStack(Material.BLUE_STAINED_GLASS_PANE, 1);
+		ItemMeta shapedRecipeToggleMeta = shapedRecipeToggle.getItemMeta();
+		shapedRecipeToggleMeta.setDisplayName("Shaped Recipe");
+		shapedRecipeToggle.setItemMeta(shapedRecipeToggleMeta);
 
+		inv.setItem(16, shapedRecipeToggle);
 		// Set rightArrowSkull
 		ItemStack rightArrowSkull = new ItemStack(Material.PLAYER_HEAD, 1, (short) 3);
 		SkullMeta rightArrowSkullMeta = (SkullMeta) rightArrowSkull.getItemMeta();

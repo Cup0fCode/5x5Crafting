@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -94,22 +95,38 @@ public class InventoryClick implements Listener {
 
 		} else if (p.getOpenInventory().getTitle().contains("New Recipe")
 				&& p.getOpenInventory().getType().equals(InventoryType.CHEST)) {
+			Inventory inv = p.getOpenInventory().getTopInventory();
 			if (!(e.getRawSlot() % 9 == 0 || e.getRawSlot() % 9 == 1 || e.getRawSlot() % 9 == 2
 					|| e.getRawSlot() % 9 == 3 || e.getRawSlot() % 9 == 4 || e.getRawSlot() == 26)
 					&& e.getRawSlot() <= e.getView().getTopInventory().getSize()) {
 				e.setCancelled(true);
-
-				// TODO: formed/unformed recipe toggle
-
+			}
+			if (e.getRawSlot() == 16) {
+				// toggle Shaped Recipe
+				if (inv.getItem(16).getItemMeta().getDisplayName().equals("Shaped Recipe")) {
+					// toggle Unshaped
+					ItemStack shapedRecipeToggle = new ItemStack(Material.RED_STAINED_GLASS_PANE, 1);
+					ItemMeta shapedRecipeToggleMeta = shapedRecipeToggle.getItemMeta();
+					shapedRecipeToggleMeta.setDisplayName("Unshaped Recipe");
+					shapedRecipeToggle.setItemMeta(shapedRecipeToggleMeta);
+					inv.setItem(16, shapedRecipeToggle);
+				} else {
+					// toggle Shaped
+					ItemStack shapedRecipeToggle = new ItemStack(Material.BLUE_STAINED_GLASS_PANE, 1);
+					ItemMeta shapedRecipeToggleMeta = shapedRecipeToggle.getItemMeta();
+					shapedRecipeToggleMeta.setDisplayName("Shaped Recipe");
+					shapedRecipeToggle.setItemMeta(shapedRecipeToggleMeta);
+					inv.setItem(16, shapedRecipeToggle);
+				}
 			}
 			if (e.getRawSlot() == 42) {
 				// Create new recipe file
-				Inventory inv = p.getOpenInventory().getTopInventory();
 				RecipeItem result = new RecipeItem(e.getClickedInventory().getItem(26));
-				Recipe recipe = new Recipe(getCraftItems(inv), result, true);
+				Recipe recipe = new Recipe(getCraftItems(inv), result, inv.getItem(16).getItemMeta().getDisplayName().equals("Shaped Recipe"));
 
 				// write file
-				try (Writer writer = new FileWriter(instance.getDataFolder() + "/recipes/customRecipes/" + result.getMaterial() + result.getItemStack().getItemMeta().getDisplayName() + ".json")) {
+				try (Writer writer = new FileWriter(instance.getDataFolder() + "/recipes/customRecipes/"
+						+ result.getMaterial() + result.getItemStack().getItemMeta().getDisplayName() + ".json")) {
 					Gson gson = new GsonBuilder().create();
 					gson.toJson(recipe, writer);
 

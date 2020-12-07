@@ -6,10 +6,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import fiveByFiveCrafting.listeners.InventoryClick;
 import fiveByFiveCrafting.listeners.InventoryClose;
+import fiveByFiveCrafting.listeners.TableClick;
 import fiveByFiveCrafting.recipes.RecipeManager;
-
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class Crafting5x5 extends JavaPlugin {
     private static Crafting5x5 instance;
@@ -26,7 +24,7 @@ public class Crafting5x5 extends JavaPlugin {
         getLogger().info("Loaded 5x5Crafting");
         getCommand("craft").setExecutor(new CraftingCommands());
 
-        registerListeners(new InventoryClose(), new InventoryClick());
+        registerListeners(new InventoryClose(), new InventoryClick(), new TableClick());
     }
 
     private void registerListeners(Listener... listeners) {

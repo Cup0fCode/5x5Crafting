@@ -2,6 +2,10 @@ package fiveByFiveCrafting.recipes;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.output.ByteArrayOutputStream;
 import org.bukkit.inventory.ItemStack;
@@ -19,8 +23,8 @@ public class RecipeItem {
 	@Expose
 	private int count;
 	@Expose
-	private RecipeChoice recipeChoice; // used for crafting recipes with choices for blocks, RecipeItem will have no
-										// item
+	private RecipeChoice recipeChoice; //used for crafting recipes with choices for blocks, RecipeItem will have no
+										//item
 	@Expose
 	private String base64ItemStack;
 
@@ -58,23 +62,27 @@ public class RecipeItem {
 		}
 
 		if (recipeItem == null) {
+			Bukkit.getLogger().info("Null RecipeItem");
 			return false;
 		}
 
 		ItemStack item = getItemStack();
 		ItemStack otherItem = recipeItem.getItemStack();
-
-		if (item.hasItemMeta()) {
-			if (!otherItem.hasItemMeta())
+		
+		if (item.getType().equals(Material.AIR) && otherItem.getType().equals(Material.AIR))
+			return true;
+		
+		Map<String, Object> serializedItem = otherItem.serialize();
+		
+		//check if existing values are the same for both objects
+		for (Entry<String, Object> entry : item.serialize().entrySet()) {
+			if (entry.getValue() == null) 
+				continue;
+			if (serializedItem.get(entry.getKey()) == null)
 				return false;
-			if (!otherItem.getItemMeta().equals(item.getItemMeta())) {
+			if (!serializedItem.get(entry.getKey()).equals(entry.getValue()))
 				return false;
-			}
 		}
-
-		if (!recipeItem.getMaterial().equals(getMaterial()))
-			return false;
-
 		return true;
 	}
 

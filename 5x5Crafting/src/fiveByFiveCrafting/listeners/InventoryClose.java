@@ -14,7 +14,6 @@ import fiveByFiveCrafting.recipes.RecipeItem;
 public class InventoryClose implements Listener {
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent e) {
-		// TODO: Give players items in chest
 		Player p = (Player) e.getPlayer();
 		Inventory inv = e.getInventory();
 		if (p.getOpenInventory().getTitle().contains("Crafting") && inv.getType().equals(InventoryType.CHEST)) {

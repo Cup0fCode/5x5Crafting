@@ -38,7 +38,6 @@ public class Recipe {
 			for (RecipeItem[] line : compressedPatternLayout) {
 				for (RecipeItem item : line) {
 					patternArray[i] = item;
-					Bukkit.getLogger().info(line[i % line.length].getMaterial().toString());
 					i++;
 				}
 			}
@@ -59,7 +58,6 @@ public class Recipe {
 
 			// set key
 			key = new HashMap<String, RecipeItem>();
-			// HashMap<String, RecipeItem> reverseKey = new HashMap<String, RecipeItem>();
 			for (int x = 0; x < keyArray.length; x++) {
 				key.put(Utils.ALPHABET[x], keyArray[x]);
 				if (keyArray[x] == null)

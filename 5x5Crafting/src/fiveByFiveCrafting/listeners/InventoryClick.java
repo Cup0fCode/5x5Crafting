@@ -102,11 +102,13 @@ public class InventoryClick implements Listener {
 						+ result.getMaterial() + result.getItemStack().getItemMeta().getDisplayName() + ".json")) {
 					Gson gson = new GsonBuilder().create();
 					gson.toJson(recipe, writer);
+					p.sendMessage("Recipe successfully created.");
 
 				} catch (IOException e1) {
 					e1.printStackTrace();
+					p.sendMessage("Recipe creation failed.");
 				}
-
+				p.closeInventory();
 			}
 		}
 	}

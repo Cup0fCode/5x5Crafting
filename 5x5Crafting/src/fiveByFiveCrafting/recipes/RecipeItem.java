@@ -17,7 +17,6 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import com.google.gson.annotations.Expose;
 
 public class RecipeItem {
-	// TODO: Expose other item attributes
 	@Expose
 	private String item;
 	@Expose
@@ -94,7 +93,6 @@ public class RecipeItem {
 				result.setAmount(getCount());
 				return result;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

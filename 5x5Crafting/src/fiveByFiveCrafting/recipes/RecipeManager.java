@@ -39,10 +39,7 @@ public class RecipeManager {
 		for (File file : listOfFiles) {
 			if (file.isFile()) {
 				try {
-					plugin.getLogger().info("Loading " + file.getAbsolutePath());
 					String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
-
-					//plugin.getLogger().info("Loaded recipe " + gson.fromJson(content, Recipe.class));
 					recipes.add(gson.fromJson(content, Recipe.class));
 				} catch (IOException err) {
 					plugin.getLogger().info(err.getMessage());
@@ -100,7 +97,6 @@ public class RecipeManager {
 				RecipeItem[] ingredients = recipe.getIngredients();
 				RecipeItem[][] itemMatrix = deepClone(pattern);
 
-				// Bukkit.getLogger().info(getAmount(itemMatrix) + ":" + ingredients.length);
 				if (getAmount(itemMatrix) != ingredients.length)
 					continue;
 
@@ -114,7 +110,6 @@ public class RecipeManager {
 							if (ingredient.check(items[i])) {
 								hasItem = true;
 								items[i] = null;
-								// Bukkit.getLogger().info(ingredient.getMaterial().name());
 								continue ingredientsLoop;
 							}
 						}
@@ -144,7 +139,6 @@ public class RecipeManager {
 
 	public static RecipeItem[][] compress(RecipeItem[][] pattern) {
 		// return pattern removing empty rows and columns
-
 		// If everything is 0 return null
 
 		boolean check = true;
@@ -269,7 +263,6 @@ public class RecipeManager {
 			}
 		}
 
-		// Bukkit.getLogger().info(pattern.toString());
 		return pattern;
 	}
 

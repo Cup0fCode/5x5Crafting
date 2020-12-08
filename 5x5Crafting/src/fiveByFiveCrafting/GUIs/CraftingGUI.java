@@ -48,9 +48,6 @@ public class CraftingGUI implements InventoryHolder {
 
 		// Set output tile
 		ItemStack outputTile = new ItemStack(Material.AIR, 1);
-//		ItemMeta outputTileMeta = outputTile.getItemMeta();
-//		outputTileMeta.setDisplayName(" ");
-//		outputTile.setItemMeta(outputTileMeta);
 		inv.setItem(26, outputTile);
 
 		// Set rightArrowSkull
@@ -73,10 +70,7 @@ public class CraftingGUI implements InventoryHolder {
 		inv.setItem(24, rightArrowSkull);
 
 		// Fill in crafting tiles
-		ItemStack craftingTiles = new ItemStack(Material.AIR, 1);
-//		ItemMeta craftingTilesMeta = craftingTiles.getItemMeta();
-//		craftingTilesMeta.setDisplayName("");
-//		craftingTiles.setItemMeta(craftingTilesMeta);
+		ItemStack craftingTiles = new ItemStack(Material.AIR, 1);;
 
 		for (int i = 0; i < 41; i++) {
 			inv.setItem(i, craftingTiles);

@@ -25,7 +25,7 @@ import fiveByFiveCrafting.recipes.RecipeItem;
 import fiveByFiveCrafting.recipes.RecipeManager;
 
 public class InventoryClick implements Listener {
-    RecipeManager recipeManager = Crafting5x5.getRecipeManager();
+	RecipeManager recipeManager = Crafting5x5.getRecipeManager();
 	Crafting5x5 instance = Crafting5x5.getInstance();
 
 	@EventHandler
@@ -40,7 +40,7 @@ public class InventoryClick implements Listener {
 					e.setCancelled(true);
 					return;
 				}
-				
+
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
 					@Override
 					public void run() {
@@ -98,21 +98,24 @@ public class InventoryClick implements Listener {
 						inv.getItem(16).getItemMeta().getDisplayName().equals("Shaped Recipe"));
 
 				// write file
-				try (Writer writer = new FileWriter(instance.getDataFolder() + "/recipes/customRecipes/"
-						+ result.getMaterial() + result.getItemStack().getItemMeta().getDisplayName() + ".json")) {
-					Gson gson = new GsonBuilder().create();
-					gson.toJson(recipe, writer);
-					p.sendMessage("Recipe successfully created.");
-					recipeManager.addRecipe(recipe);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-					p.sendMessage("Recipe creation failed.");
+				if (!result.getMaterial().equals(Material.AIR)) {
+					try (Writer writer = new FileWriter(
+							instance.getDataFolder() + "/recipes/customRecipes/" + result.getMaterial() + ".json")) {
+						Gson gson = new GsonBuilder().create();
+						gson.toJson(recipe, writer);
+						p.sendMessage("Recipe successfully created.");
+						recipeManager.addRecipe(recipe);
+					} catch (IOException e1) {
+						p.sendMessage("Recipe creation failed.");
+					}
+					p.closeInventory();
+				} else {
+					p.sendMessage("Your recipe must have an output");
 				}
-				p.closeInventory();
 			}
 		}
 	}
-	
+
 	public static int getLowestCount(RecipeItem[][] lines) {
 		int lowestCount = 64;
 		for (RecipeItem[] line : lines) {
@@ -124,7 +127,8 @@ public class InventoryClick implements Listener {
 				}
 			}
 		}
-		return Math.min(lowestCount, 64 / Crafting5x5.getRecipeManager().getRecipeByPattern(lines).getResult().getCount());
+		return Math.min(lowestCount,
+				64 / Crafting5x5.getRecipeManager().getRecipeByPattern(lines).getResult().getCount());
 	}
 
 	public static RecipeItem[][] getCraftItems(Inventory inv) {

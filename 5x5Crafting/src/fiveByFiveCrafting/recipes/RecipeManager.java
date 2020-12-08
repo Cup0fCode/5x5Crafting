@@ -2,16 +2,10 @@ package fiveByFiveCrafting.recipes;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -55,6 +49,7 @@ public class RecipeManager {
 				}
 			}
 		}
+		
 		// Add Minecraft Recipes
 		Iterator<org.bukkit.inventory.Recipe> recipeIterator = Bukkit.recipeIterator();
 		while (recipeIterator.hasNext()) {
@@ -128,7 +123,6 @@ public class RecipeManager {
 						continue recipeLoop;
 					}
 				}
-				Bukkit.getLogger().info(recipe.toString());
 				return recipe;
 			}
 		}

@@ -31,10 +31,11 @@ public class RecipeItem {
 	public RecipeItem(ItemStack item) {
 		if (item == null) {
 			this.item = "AIR";
+			count = 0;
 		} else {
 			this.item = item.getType().name();
 			base64ItemStack = itemTo64(item);
-
+			count = item.getAmount();
 		}
 	}
 
@@ -89,13 +90,15 @@ public class RecipeItem {
 	public ItemStack getItemStack() {
 		if (base64ItemStack != null) {
 			try {
-				return itemFrom64(base64ItemStack);
+				ItemStack result = itemFrom64(base64ItemStack);
+				result.setAmount(getCount());
+				return result;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		return new ItemStack(getMaterial(), count);
+		return new ItemStack(getMaterial(), getCount());
 	}
 
 	public int getCount() {

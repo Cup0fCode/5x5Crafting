@@ -103,7 +103,7 @@ public class InventoryClick implements Listener {
 					Gson gson = new GsonBuilder().create();
 					gson.toJson(recipe, writer);
 					p.sendMessage("Recipe successfully created.");
-
+					recipeManager.addRecipe(recipe);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 					p.sendMessage("Recipe creation failed.");

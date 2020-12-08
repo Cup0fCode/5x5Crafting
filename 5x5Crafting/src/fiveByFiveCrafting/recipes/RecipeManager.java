@@ -275,5 +275,9 @@ public class RecipeManager {
 		}
 		return second;
 	}
+	
+	public void addRecipe(Recipe recipe) {
+		recipes.add(recipe);
+	}
 
 }

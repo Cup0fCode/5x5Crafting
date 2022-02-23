@@ -48,7 +48,8 @@ public class RecipeManager {
 		}
 		
 		// Add Minecraft Recipes
-		Iterator<org.bukkit.inventory.Recipe> recipeIterator = Bukkit.recipeIterator();
+		Iterator<org.bukkit.inventory.Recipe> recipeIterator = Bukkit.recipeIterator() != null
+				? Bukkit.recipeIterator() : new ArrayList<org.bukkit.inventory.Recipe>().iterator();
 		while (recipeIterator.hasNext()) {
 			org.bukkit.inventory.Recipe recipe = recipeIterator.next();
 			if (recipe instanceof org.bukkit.inventory.ShapelessRecipe || recipe instanceof org.bukkit.inventory.ShapedRecipe) {
